@@ -50,9 +50,6 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 
-
-
-
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
