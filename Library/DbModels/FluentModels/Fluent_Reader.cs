@@ -4,6 +4,7 @@ using Library.DbModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Library.DbModels.FluentModels;
 
 namespace Library.DbModels
 {
@@ -22,6 +23,7 @@ namespace Library.DbModels
         public string PhoneNumber { get; set; }
         //[NotMapped]
         public int TempId { get; set; }
+        public Fluent_User User { get; set; }
         public List<Fluent_BookReader> BookReaders { get; set; }
     }
 }

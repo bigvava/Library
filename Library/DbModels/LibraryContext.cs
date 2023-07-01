@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Library.DbModels.FluentModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.DbModels
 {
@@ -25,13 +26,18 @@ namespace Library.DbModels
         public DbSet<Fluent_Reader> Fluent_Readers { get; set; }
         public DbSet<Fluent_BookReader> Fluent_BookReaders { get; set; }
 
+        public DbSet<Fluent_User> Fluent_Users { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseSqlServer("Server=ASUS\\BIGSERVER;Database=Library;TrustServerCertificate=True;Trusted_Connection=True");
+            options.UseSqlServer("Server=ASUS\\BIGSERVER;Database=LibraryNew;TrustServerCertificate=True;Trusted_Connection=True");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Fluent_User>().HasKey(x => x.Id);
+            modelBuilder.Entity<Fluent_User>().HasOne(x => x.Reader).WithOne(r => r.User).HasForeignKey<Fluent_User>(x => x.ReaderId);
+
             modelBuilder.Entity<Fluent_Author>().HasKey(x => x.Id);
             modelBuilder.Entity<Fluent_Author>().Property(x => x.FullName).IsRequired();
             modelBuilder.Entity<Fluent_Author>().Property(x => x.FullName).HasMaxLength(200);
