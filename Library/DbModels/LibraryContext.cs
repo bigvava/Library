@@ -30,6 +30,7 @@ namespace Library.DbModels
         public DbSet<Fluent_User> Fluent_Users { get; set; }
         public DbSet<Fluent_Role> Fluent_Roles { get; set; }
         public DbSet<Fluent_UserRole> Fluent_UsersRoles { get; set; }
+        public DbSet<Fluent_BookWithDetails> Fluent_BookWithDetails { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -38,6 +39,7 @@ namespace Library.DbModels
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Fluent_BookWithDetails>().ToTable("Fluent_BookWithDetails", t => t.ExcludeFromMigrations());
             modelBuilder.Entity<Fluent_User>().HasKey(x => x.Id);
             modelBuilder.Entity<Fluent_User>().HasOne(x => x.Reader).WithOne(r => r.User).HasForeignKey<Fluent_User>(x => x.ReaderId);
             modelBuilder.Entity<Fluent_User>().HasOne(x => x.Employee).WithOne(r => r.User).HasForeignKey<Fluent_User>(x => x.EmployeeId);

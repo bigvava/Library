@@ -4,6 +4,7 @@ using Library.DbModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20230713163206_StoredProceduresMigration")]
+    partial class StoredProceduresMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,7 +66,7 @@ namespace Library.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Fluent_Roles", (string)null);
+                    b.ToTable("Fluent_Roles");
                 });
 
             modelBuilder.Entity("Library.DbModels.FluentModels.Fluent_User", b =>
@@ -105,7 +108,7 @@ namespace Library.Migrations
                         .IsUnique()
                         .HasFilter("[ReaderId] IS NOT NULL");
 
-                    b.ToTable("Fluent_Users", (string)null);
+                    b.ToTable("Fluent_Users");
                 });
 
             modelBuilder.Entity("Library.DbModels.FluentModels.Fluent_UserRole", b =>
@@ -138,7 +141,7 @@ namespace Library.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Fluent_Authors", (string)null);
+                    b.ToTable("Fluent_Authors");
                 });
 
             modelBuilder.Entity("Library.DbModels.Fluent_Book", b =>
@@ -175,7 +178,7 @@ namespace Library.Migrations
 
                     b.HasIndex("PublisherId");
 
-                    b.ToTable("Fluent_Books", (string)null);
+                    b.ToTable("Fluent_Books");
                 });
 
             modelBuilder.Entity("Library.DbModels.Fluent_BookDetail", b =>
@@ -201,7 +204,7 @@ namespace Library.Migrations
                     b.HasIndex("BookId")
                         .IsUnique();
 
-                    b.ToTable("Fluent_BookDetails", (string)null);
+                    b.ToTable("Fluent_BookDetails");
                 });
 
             modelBuilder.Entity("Library.DbModels.Fluent_BookReader", b =>
@@ -241,7 +244,7 @@ namespace Library.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Fluent_Employees", (string)null);
+                    b.ToTable("Fluent_Employees");
                 });
 
             modelBuilder.Entity("Library.DbModels.Fluent_Publisher", b =>
@@ -263,7 +266,7 @@ namespace Library.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Fluent_Publishers", (string)null);
+                    b.ToTable("Fluent_Publishers");
                 });
 
             modelBuilder.Entity("Library.DbModels.Fluent_Reader", b =>
@@ -288,7 +291,7 @@ namespace Library.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Fluent_Readers", (string)null);
+                    b.ToTable("Fluent_Readers");
                 });
 
             modelBuilder.Entity("Library.DbModels.FluentModels.Fluent_User", b =>
