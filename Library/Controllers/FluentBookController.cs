@@ -1,7 +1,9 @@
-﻿using Library.Dtos;
+﻿using Library.DbModels.FluentModels;
+using Library.Dtos;
 using Library.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -16,6 +18,15 @@ namespace Library.Controllers
         public FluentBookController(LibraryContext context)
         {
             _context = context;
+        }
+
+        [HttpGet("SearchBooksByAuthorName{authorName}")]
+        public async Task<ActionResult<List<Fluent_BookWithDetails>>> Get(string authorName)
+        {
+            var parameter1 = new SqlParameter("@AuthorName", authorName);
+
+            var booksFromDb = _context.Fluent_BookWithDetails.FromSqlRaw("EXECUTE [dbo].[GetBooksWithDetailsByAuthorName] @AuthorName", parameter1).ToList();
+            return booksFromDb;
         }
 
         [HttpGet]
