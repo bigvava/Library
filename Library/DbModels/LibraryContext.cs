@@ -40,6 +40,7 @@ namespace Library.DbModels
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Fluent_BookWithDetails>().ToTable("Fluent_BookWithDetails", t => t.ExcludeFromMigrations());
+            
             modelBuilder.Entity<Fluent_User>().HasKey(x => x.Id);
             modelBuilder.Entity<Fluent_User>().HasOne(x => x.Reader).WithOne(r => r.User).HasForeignKey<Fluent_User>(x => x.ReaderId);
             modelBuilder.Entity<Fluent_User>().HasOne(x => x.Employee).WithOne(r => r.User).HasForeignKey<Fluent_User>(x => x.EmployeeId);
