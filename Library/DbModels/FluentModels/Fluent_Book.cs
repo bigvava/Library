@@ -16,6 +16,8 @@
         public int PublisherId { get; set; }
         public Fluent_Publisher Publisher { get; set; }
         public List<Fluent_BookReader> BookReaders { get; set; }
+        public int? EmployeeID { get; set; }
+        public Fluent_Employee Employee { get; set; }
         public Fluent_BookDetail BookDetail { get; set; }
     }
 }

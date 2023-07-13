@@ -1,6 +1,7 @@
 ﻿global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using Library.DbModels;
+global using Newtonsoft.Json;
 using System.Text;
 using System.Text.Json.Serialization;
 using Library.Controllers;

@@ -1,6 +1,9 @@
 ﻿using Library.Dtos;
+using Library.Filters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Library.Controllers
 {
@@ -16,15 +19,42 @@ namespace Library.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Fluent_Book>>> Get()
+        [Authorize]
+        [RoleFilter("Reader,BookAdder")]
+        public async Task<ActionResult<List<GetBookDto>>> Get()
         {
-            return await _context.Fluent_Books.ToListAsync();
+            var currency = await Helper.GetCurrencyByCode("USD");
+            var booksFromDb = await _context.Fluent_Books
+                .Include(b=>b.BookDetail)
+                .ToListAsync();
+
+            List<GetBookDto> resulsts = new List<GetBookDto>();
+
+            foreach (var b in booksFromDb)
+            {
+                GetBookDto book = new GetBookDto()
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                    PagesCount = b.BookDetail.PagesCount,
+                    PriceInGel = $"{(double)b.BookDetail.Price}₾",
+                    PriceInUsd = $"{Math.Round((double)b.BookDetail.Price/currency,2)}$"
+                };
+
+                resulsts.Add(book);
+            }
+
+
+            return Ok(resulsts);
         }
 
         [HttpPost]
+        [Authorize]
+        [RoleFilter("BookAdder")]
         public async Task<ActionResult<List<GetBookDto>>> Post(BookAddDto request)
         {
-
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await _context.Fluent_Users.FirstOrDefaultAsync(x => x.Id == int.Parse(userId));
             Fluent_BookDetail detail = new()
             {
                 PagesCount = request.PagesCount,
@@ -37,7 +67,8 @@ namespace Library.Controllers
                 AuthorId = request.AuthorId,
                 PublisherId = request.PublisherId,
                 BookDetail = detail,
-                Description = request.Description
+                Description = request.Description,
+                EmployeeID = user.EmployeeId.Value
             };
 
             await _context.AddAsync(newBook);

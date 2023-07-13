@@ -4,6 +4,7 @@ using Library.DbModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20230708165821_fluentUserTableForeignKeyReaderIdBecameNullable")]
+    partial class fluentUserTableForeignKeyReaderIdBecameNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,9 +131,6 @@ namespace Library.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int?>("EmployeeID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -142,8 +142,6 @@ namespace Library.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
-
-                    b.HasIndex("EmployeeID");
 
                     b.HasIndex("PublisherId");
 
@@ -176,6 +174,21 @@ namespace Library.Migrations
                     b.ToTable("Fluent_BookDetails");
                 });
 
+            modelBuilder.Entity("Library.DbModels.Fluent_BookEmployee", b =>
+                {
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BookId", "EmployeeId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("Fluent_BookEmployee", (string)null);
+                });
+
             modelBuilder.Entity("Library.DbModels.Fluent_BookReader", b =>
                 {
                     b.Property<int>("BookId")
@@ -199,9 +212,6 @@ namespace Library.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("EmployeeTypeId")
-                        .HasColumnType("int");
-
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
@@ -210,6 +220,9 @@ namespace Library.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TempId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -305,10 +318,6 @@ namespace Library.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Library.DbModels.Fluent_Employee", "Employee")
-                        .WithMany("Books")
-                        .HasForeignKey("EmployeeID");
-
                     b.HasOne("Library.DbModels.Fluent_Publisher", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("PublisherId")
@@ -316,8 +325,6 @@ namespace Library.Migrations
                         .IsRequired();
 
                     b.Navigation("Author");
-
-                    b.Navigation("Employee");
 
                     b.Navigation("Publisher");
                 });
@@ -331,6 +338,25 @@ namespace Library.Migrations
                         .IsRequired();
 
                     b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("Library.DbModels.Fluent_BookEmployee", b =>
+                {
+                    b.HasOne("Library.DbModels.Fluent_Book", "Book")
+                        .WithMany("BookEmployees")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Library.DbModels.Fluent_Employee", "Employee")
+                        .WithMany("BookEmployees")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("Library.DbModels.Fluent_BookReader", b =>
@@ -371,12 +397,14 @@ namespace Library.Migrations
                 {
                     b.Navigation("BookDetail");
 
+                    b.Navigation("BookEmployees");
+
                     b.Navigation("BookReaders");
                 });
 
             modelBuilder.Entity("Library.DbModels.Fluent_Employee", b =>
                 {
-                    b.Navigation("Books");
+                    b.Navigation("BookEmployees");
 
                     b.Navigation("User");
                 });

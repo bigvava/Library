@@ -24,9 +24,12 @@ namespace Library.DbModels
         public DbSet<Fluent_Author> Fluent_Authors { get; set; }
         public DbSet<Fluent_Publisher> Fluent_Publishers { get; set; }
         public DbSet<Fluent_Reader> Fluent_Readers { get; set; }
+        public DbSet<Fluent_Employee> Fluent_Employees { get; set; }
         public DbSet<Fluent_BookReader> Fluent_BookReaders { get; set; }
 
         public DbSet<Fluent_User> Fluent_Users { get; set; }
+        public DbSet<Fluent_Role> Fluent_Roles { get; set; }
+        public DbSet<Fluent_UserRole> Fluent_UsersRoles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -37,6 +40,14 @@ namespace Library.DbModels
         {
             modelBuilder.Entity<Fluent_User>().HasKey(x => x.Id);
             modelBuilder.Entity<Fluent_User>().HasOne(x => x.Reader).WithOne(r => r.User).HasForeignKey<Fluent_User>(x => x.ReaderId);
+            modelBuilder.Entity<Fluent_User>().HasOne(x => x.Employee).WithOne(r => r.User).HasForeignKey<Fluent_User>(x => x.EmployeeId);
+
+            modelBuilder.Entity<Fluent_Role>().HasKey(x => x.Id);
+
+            modelBuilder.Entity<Fluent_UserRole>().HasKey(x => new { x.UserId, x.RoleId });
+            modelBuilder.Entity<Fluent_UserRole>().ToTable("Fluent_Users_Roles");
+            modelBuilder.Entity<Fluent_UserRole>().HasOne(x => x.User).WithMany(u => u.UsersRoles).HasForeignKey(x => x.UserId);
+            modelBuilder.Entity<Fluent_UserRole>().HasOne(x => x.Role).WithMany(u => u.UsersRoles).HasForeignKey(x => x.RoleId);
 
             modelBuilder.Entity<Fluent_Author>().HasKey(x => x.Id);
             modelBuilder.Entity<Fluent_Author>().Property(x => x.FullName).IsRequired();
@@ -47,6 +58,7 @@ namespace Library.DbModels
             modelBuilder.Entity<Fluent_Book>().Property(x => x.Name).HasMaxLength(50);
             modelBuilder.Entity<Fluent_Book>().Property(x => x.Description).HasMaxLength(200);
             modelBuilder.Entity<Fluent_Book>().HasOne(x=>x.Publisher).WithMany(x=>x.Books).HasForeignKey(x=>x.PublisherId);
+            modelBuilder.Entity<Fluent_Book>().HasOne(x=>x.Employee).WithMany(x=>x.Books).HasForeignKey(x=>x.EmployeeID);
             modelBuilder.Entity<Fluent_Book>().HasOne(x=>x.Author).WithMany(x=>x.Books).HasForeignKey(x=>x.AuthorId);
 
 
@@ -65,7 +77,9 @@ namespace Library.DbModels
             modelBuilder.Entity<Fluent_BookReader>().HasOne(x => x.Book).WithMany(x => x.BookReaders).HasForeignKey(x => x.BookId);
             modelBuilder.Entity<Fluent_BookReader>().HasOne(x => x.Reader).WithMany(x => x.BookReaders).HasForeignKey(x => x.ReaderId);
             modelBuilder.Entity<Fluent_BookReader>().ToTable("Fluent_BookReader");
-            
+
+            modelBuilder.Entity<Fluent_Employee>().HasKey(x=>x.Id);
+
             //modelBuilder.Entity<BookReader>().HasKey(x => new { x.BookId, x.ReaderId });
 
 

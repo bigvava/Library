@@ -8,7 +8,10 @@
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public DateTime Created { get; set; }
-        public int ReaderId { get; set; }
+        public int? ReaderId { get; set; }
         public Fluent_Reader Reader { get; set; }
+        public int? EmployeeId { get; set; }
+        public Fluent_Employee Employee { get; set; }
+        public List<Fluent_UserRole> UsersRoles { get; set; }
     }
 }

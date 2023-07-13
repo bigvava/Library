@@ -4,6 +4,7 @@ using Library.DbModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20230704162320_RolesAndUSerRolesRelationTablesAdded")]
+    partial class RolesAndUSerRolesRelationTablesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,16 +55,13 @@ namespace Library.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EmployeeId")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("PasswordHash")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<byte[]>("PasswordSalt")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int?>("ReaderId")
+                    b.Property<int>("ReaderId")
                         .HasColumnType("int");
 
                     b.Property<string>("Username")
@@ -69,13 +69,8 @@ namespace Library.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId")
-                        .IsUnique()
-                        .HasFilter("[EmployeeId] IS NOT NULL");
-
                     b.HasIndex("ReaderId")
-                        .IsUnique()
-                        .HasFilter("[ReaderId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Fluent_Users");
                 });
@@ -128,9 +123,6 @@ namespace Library.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int?>("EmployeeID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -142,8 +134,6 @@ namespace Library.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
-
-                    b.HasIndex("EmployeeID");
 
                     b.HasIndex("PublisherId");
 
@@ -189,31 +179,6 @@ namespace Library.Migrations
                     b.HasIndex("ReaderId");
 
                     b.ToTable("Fluent_BookReader", (string)null);
-                });
-
-            modelBuilder.Entity("Library.DbModels.Fluent_Employee", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EmployeeTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Fluent_Employees");
                 });
 
             modelBuilder.Entity("Library.DbModels.Fluent_Publisher", b =>
@@ -265,15 +230,11 @@ namespace Library.Migrations
 
             modelBuilder.Entity("Library.DbModels.FluentModels.Fluent_User", b =>
                 {
-                    b.HasOne("Library.DbModels.Fluent_Employee", "Employee")
-                        .WithOne("User")
-                        .HasForeignKey("Library.DbModels.FluentModels.Fluent_User", "EmployeeId");
-
                     b.HasOne("Library.DbModels.Fluent_Reader", "Reader")
                         .WithOne("User")
-                        .HasForeignKey("Library.DbModels.FluentModels.Fluent_User", "ReaderId");
-
-                    b.Navigation("Employee");
+                        .HasForeignKey("Library.DbModels.FluentModels.Fluent_User", "ReaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Reader");
                 });
@@ -305,10 +266,6 @@ namespace Library.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Library.DbModels.Fluent_Employee", "Employee")
-                        .WithMany("Books")
-                        .HasForeignKey("EmployeeID");
-
                     b.HasOne("Library.DbModels.Fluent_Publisher", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("PublisherId")
@@ -316,8 +273,6 @@ namespace Library.Migrations
                         .IsRequired();
 
                     b.Navigation("Author");
-
-                    b.Navigation("Employee");
 
                     b.Navigation("Publisher");
                 });
@@ -372,13 +327,6 @@ namespace Library.Migrations
                     b.Navigation("BookDetail");
 
                     b.Navigation("BookReaders");
-                });
-
-            modelBuilder.Entity("Library.DbModels.Fluent_Employee", b =>
-                {
-                    b.Navigation("Books");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Library.DbModels.Fluent_Publisher", b =>

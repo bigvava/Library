@@ -43,12 +43,24 @@ namespace Library.Controllers
                 PhoneNumber = userForRegisterDto.PhoneNumber
             };
 
+            var role = _context.Fluent_Roles.FirstOrDefault(x => x.Name == "Reader");
+            int roleId = role != null ? role.Id : 2;
+
+            List<Fluent_UserRole> roles = new List<Fluent_UserRole>();
+            roles.Add(
+                new Fluent_UserRole()
+                {
+                    RoleId = roleId
+                }
+                );
+
             Fluent_User userToCreate = new()
             {
                 Reader = fluent_Reader,
                 Username = userForRegisterDto.Username,
                 Email = userForRegisterDto.Email,
-                Created = DateTime.Now
+                Created = DateTime.Now,
+                UsersRoles = roles
             };
 
 
