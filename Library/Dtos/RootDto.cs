@@ -1,5 +1,6 @@
 ﻿namespace Library.Dtos
 {
+    //new comment added
     public class Currency
     {
         [JsonProperty("code")]
